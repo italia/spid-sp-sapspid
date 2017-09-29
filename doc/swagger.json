@@ -1,0 +1,1923 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.4",
+    "title": "SP Spid",
+    "description": "SPID gateway. API to easily work with SPID",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "contact": {
+      "email": "franco.ricc@gmail.com"
+    }
+  },
+  "host": "spid.uniroma1.it",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "jwt",
+      "description": "Manipulate JWT token"
+    },
+    {
+      "name": "metadata",
+      "description": "Manage metadata"
+    },
+    {
+      "name": "saml",
+      "description": "work with saml assertions"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/version": {
+      "get": {
+        "description": "get api version",
+        "summary": "version",
+        "tags": [
+          "misc"
+        ],
+        "operationId": "version",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [],
+        "x-unitTests": [
+          {
+            "request": {
+              "method": "GET",
+              "uri": "/version"
+            },
+            "expectedResponse": {
+              "x-allowExtraHeaders": true,
+              "x-bodyMatchMode": "NONE",
+              "x-arrayOrderedMatching": false,
+              "x-arrayCheckCount": false,
+              "x-matchResponseSchema": true,
+              "headers": {}
+            },
+            "x-testShouldPass": true,
+            "x-testEnabled": true,
+            "x-testName": "version",
+            "x-testDescription": "TODO: Add Description"
+          }
+        ],
+        "x-operation-settings": {
+          "CollectParameters": false,
+          "AllowDynamicQueryParameters": false,
+          "AllowDynamicFormParameters": false,
+          "IsMultiContentStreaming": false
+        }
+      }
+    },
+    "/jwt/getByType": {
+      "get": {
+        "description": "Encode a jwt token specifying a token type as in jwt.token_type table",
+        "summary": "Encode a jwt token of type specified",
+        "tags": [
+          "jwt"
+        ],
+        "operationId": "get token by type",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "token type. jwt1: Default jwt type, jwt2: Generic saml assertions token, jwt1_es256: jwt ECDSA 256 asymmetric keys",
+            "default": "jwt1",
+            "enum": [
+              "jwt1",
+              "jwt2",
+              "jwt1_es256"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New token createtd",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/tokenOK"
+              }
+            }
+          },
+          "404": {
+            "description": "Token type not found",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          }
+        },
+        "security": [],
+        "x-unitTests": [
+          {
+            "request": {
+              "method": "GET",
+              "uri": "/jwt/getByType?type=jwt1"
+            },
+            "expectedResponse": {
+              "x-allowExtraHeaders": true,
+              "x-bodyMatchMode": "NONE",
+              "x-arrayOrderedMatching": false,
+              "x-arrayCheckCount": false,
+              "x-matchResponseSchema": true,
+              "headers": {}
+            },
+            "x-testShouldPass": true,
+            "x-testEnabled": true,
+            "x-testName": "get token by type",
+            "x-testDescription": "TODO: Add Description"
+          }
+        ],
+        "x-operation-settings": {
+          "CollectParameters": false,
+          "AllowDynamicQueryParameters": false,
+          "AllowDynamicFormParameters": false,
+          "IsMultiContentStreaming": false
+        }
+      }
+    },
+    "/jwt/verify": {
+      "get": {
+        "description": "Check validity of jwt token",
+        "summary": "verify token",
+        "tags": [
+          "jwt"
+        ],
+        "operationId": "verify token - get",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "jwt token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "token valid",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/tokenValid"
+              }
+            }
+          },
+          "401": {
+            "description": "token not valid",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          }
+        },
+        "security": [],
+        "x-unitTests": [
+          {
+            "request": {
+              "method": "GET",
+              "uri": "/jwt/verify?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJTZXJ2aWNlIFByb3ZpZGVycyB1c2luZyBFYXN5U1BJRCBBUEkiLCJleHAiOjE0OTQ0MzczNTMsImlhdCI6MTQ5NDQzNjE1MywiaXNzIjoiRWFzeVNQSUQgZ2F0ZXdheSIsImp0aSI6ImFhZmFlNmUzLTcwNjgtNDJkMy1hMzBlLWM1YmY0NjA2ZWUzOSIsIm5iZiI6MTQ5NDQzNjE1Mywic3ViIjoiQWNjZXNzIHRvIEVhc3lTUElEIEFQSSJ9.Ls5nY-fApQUnacXSRDvX9yv-zgOUWADGIdeB3ZRdHQ4"
+            },
+            "expectedResponse": {
+              "x-allowExtraHeaders": true,
+              "x-bodyMatchMode": "NONE",
+              "x-arrayOrderedMatching": false,
+              "x-arrayCheckCount": false,
+              "x-matchResponseSchema": true,
+              "headers": {}
+            },
+            "x-testShouldPass": true,
+            "x-testEnabled": true,
+            "x-testName": "verify token",
+            "x-testDescription": "TODO: Add Description"
+          }
+        ],
+        "x-operation-settings": {
+          "CollectParameters": false,
+          "AllowDynamicQueryParameters": false,
+          "AllowDynamicFormParameters": false,
+          "IsMultiContentStreaming": false
+        }
+      },
+      "post": {
+        "description": "Check validity of jwt token",
+        "summary": "verify token",
+        "tags": [
+          "jwt"
+        ],
+        "operationId": "verify token - post",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/VerifyTokenrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "token valid",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/tokenValid"
+              }
+            }
+          },
+          "401": {
+            "description": "token not valid",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          },
+          "404": {
+            "description": "no token found to verify",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          }
+        },
+        "security": [],
+        "x-unitTests": [],
+        "x-operation-settings": {
+          "CollectParameters": false,
+          "AllowDynamicQueryParameters": false,
+          "AllowDynamicFormParameters": false,
+          "IsMultiContentStreaming": false
+        }
+      }
+    },
+    "/prvd/{cod_prvd}/metadata": {
+      "get": {
+        "description": "Get provider metadat stored in saml.metadata table",
+        "summary": "get provider metadata",
+        "tags": [
+          "metadata"
+        ],
+        "operationId": "get provider metadata",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "cod_prvd",
+            "in": "path",
+            "description": "Provider code. To get provider codes use /prvd service.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "return provider metadata",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/getMetadataResponse"
+              }
+            }
+          },
+          "404": {
+            "description": "no metadata found",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          }
+        },
+        "security": [],
+        "x-unitTests": [
+          {
+            "request": {
+              "method": "GET",
+              "uri": "/prvd/{cod_prvd}/metadata"
+            },
+            "expectedResponse": {
+              "x-allowExtraHeaders": true,
+              "x-bodyMatchMode": "NONE",
+              "x-arrayOrderedMatching": false,
+              "x-arrayCheckCount": false,
+              "x-matchResponseSchema": true,
+              "headers": {}
+            },
+            "x-testShouldPass": true,
+            "x-testEnabled": true,
+            "x-testName": "get provider metadata",
+            "x-testDescription": "TODO: Add Description"
+          }
+        ],
+        "x-operation-settings": {
+          "CollectParameters": false,
+          "AllowDynamicQueryParameters": false,
+          "AllowDynamicFormParameters": false,
+          "IsMultiContentStreaming": false
+        }
+      }
+    },
+    "/prvd/{cod_prvd}/metadata/verify": {
+      "post": {
+        "description": "verify metadata validity",
+        "summary": "verify metadata signature and xml schema",
+        "tags": [
+          "metadata"
+        ],
+        "operationId": "verify metadata",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "cod_prvd",
+            "in": "path",
+            "description": "Provider code. To get provider codes use /prvd service.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/VerifyMetadatarequest"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "application/json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "metadata valid",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/metadataValid"
+              }
+            }
+          },
+          "401": {
+            "description": "metadata not valid",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/metadataValid"
+              }
+            }
+          },
+          "404": {
+            "description": "no sp found to verify metadata",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          }
+        },
+        "security": [],
+        "x-unitTests": [],
+        "x-operation-settings": {
+          "CollectParameters": false,
+          "AllowDynamicQueryParameters": false,
+          "AllowDynamicFormParameters": false,
+          "IsMultiContentStreaming": false
+        }
+      }
+    },
+    "/prvd/{cod_prvd}/metadata/build": {
+      "get": {
+        "description": "build service provider metadata",
+        "summary": "build service provider meta data based on settings in saml.settings table and saml.signature data",
+        "tags": [
+          "metadata"
+        ],
+        "operationId": "build sp metadata",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "cod_prvd",
+            "in": "path",
+            "description": "Service provider code. To get provider codes use /prvd service.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "return provider metadata",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/metadataBuild"
+              }
+            }
+          },
+          "404": {
+            "description": "no settings found",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          }
+        },
+        "security": [],
+        "x-unitTests": [
+          {
+            "request": {
+              "method": "GET",
+              "uri": "/prvd/sapienza/metadata/build"
+            },
+            "expectedResponse": {
+              "x-allowExtraHeaders": true,
+              "x-bodyMatchMode": "NONE",
+              "x-arrayOrderedMatching": false,
+              "x-arrayCheckCount": false,
+              "x-matchResponseSchema": true,
+              "headers": {}
+            },
+            "x-testShouldPass": true,
+            "x-testEnabled": true,
+            "x-testName": "build provider metadata",
+            "x-testDescription": "TODO: Add Description"
+          }
+        ],
+        "x-operation-settings": {
+          "CollectParameters": false,
+          "AllowDynamicQueryParameters": false,
+          "AllowDynamicFormParameters": false,
+          "IsMultiContentStreaming": false
+        }
+      }
+    },
+    "/prvd": {
+      "get": {
+        "description": "get list of providers",
+        "summary": "get list of providers in saml.providers table",
+        "tags": [
+          "misc"
+        ],
+        "operationId": "get providers",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "list of providers",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/providersList"
+              }
+            }
+          },
+          "404": {
+            "description": "no providers found",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          }
+        },
+        "security": [],
+        "x-unitTests": [
+          {
+            "request": {
+              "method": "GET",
+              "uri": "/prvd"
+            },
+            "expectedResponse": {
+              "x-allowExtraHeaders": true,
+              "x-bodyMatchMode": "NONE",
+              "x-arrayOrderedMatching": false,
+              "x-arrayCheckCount": false,
+              "x-matchResponseSchema": true,
+              "headers": {}
+            },
+            "x-testShouldPass": true,
+            "x-testEnabled": true,
+            "x-testName": "get providers",
+            "x-testDescription": "TODO: Add Description"
+          }
+        ],
+        "x-operation-settings": {
+          "CollectParameters": false,
+          "AllowDynamicQueryParameters": false,
+          "AllowDynamicFormParameters": false,
+          "IsMultiContentStreaming": false
+        }
+      }
+    },
+    "/prvd/{cod_prvd}/authnreq/build": {
+      "get": {
+        "description": "build athentication request",
+        "summary": "build authentication request for sp specified",
+        "tags": [
+          "saml"
+        ],
+        "operationId": "build authn request",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "cod_prvd",
+            "in": "path",
+            "description": "Service provider code. To get provider codes use /prvd service.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "idp",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "identity provider code"
+          },
+          {
+            "name": "attrindex",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "attribute index of sp metadata"
+          },
+          {
+            "name": "binding",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "binding type",
+            "enum": [
+              "redirect",
+              "post"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "return authentication request",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/authnBuild"
+              }
+            }
+          },
+          "404": {
+            "description": "no sp found",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          }
+        },
+        "security": [],
+        "x-unitTests": [
+          {
+            "request": {
+              "method": "GET",
+              "uri": "/prvd/sapienza/authnreq/build?idp=pt&attrindex=0&binding=redirect"
+            },
+            "expectedResponse": {
+              "x-allowExtraHeaders": true,
+              "x-bodyMatchMode": "NONE",
+              "x-arrayOrderedMatching": false,
+              "x-arrayCheckCount": false,
+              "x-matchResponseSchema": true,
+              "headers": {}
+            },
+            "x-testShouldPass": true,
+            "x-testEnabled": true,
+            "x-testName": "build authn request",
+            "x-testDescription": "TODO: Add Description"
+          }
+        ],
+        "x-operation-settings": {
+          "CollectParameters": false,
+          "AllowDynamicQueryParameters": false,
+          "AllowDynamicFormParameters": false,
+          "IsMultiContentStreaming": false
+        }
+      }
+    },
+    "/prvd/{cod_prvd}/authnreq/verify": {
+      "post": {
+        "description": "verify authentication request validity",
+        "summary": "verify authentication request signature and xml schema",
+        "tags": [
+          "saml"
+        ],
+        "operationId": "verify authn request",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "cod_prvd",
+            "in": "path",
+            "description": "Provider code. To get provider codes use /prvd service.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "request",
+            "schema": {
+              "$ref": "#/definitions/VerifyAuthnRequestrequest"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "authn request valid",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/authnValid"
+              }
+            }
+          },
+          "401": {
+            "description": "authn request not valid",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/authnValid"
+              }
+            }
+          },
+          "404": {
+            "description": "no sp found to verify authn request",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          }
+        },
+        "security": [],
+        "x-unitTests": [],
+        "x-operation-settings": {
+          "CollectParameters": false,
+          "AllowDynamicQueryParameters": false,
+          "AllowDynamicFormParameters": false,
+          "IsMultiContentStreaming": false
+        }
+      }
+    },
+    "/prvd/{cod_prvd}/authnreq/login": {
+      "get": {
+        "description": "build authentication request and send it to identity provider",
+        "summary": "build authn request and send to idp",
+        "tags": [
+          "saml"
+        ],
+        "operationId": "login authn request",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "cod_prvd",
+            "in": "path",
+            "description": "Sp code. To get service provider codes use /prvd service.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "idp",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "idp code"
+          },
+          {
+            "name": "attrindex",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "attribute index of sp metadata"
+          },
+          {
+            "name": "binding",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "binding type",
+            "enum": [
+              "redirect",
+              "post"
+            ]
+          },
+          {
+            "name": "srelay",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "relay status code"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "return an html form and post it to idp url"
+          },
+          "303": {
+            "description": "redirect client browser to idp url"
+          },
+          "404": {
+            "description": "no sp found to build authn",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          }
+        },
+        "security": [],
+        "x-unitTests": [
+          {
+            "request": {
+              "method": "GET",
+              "uri": "/prvd/uniroma1/authnreq/login?idp=pt&attrindex=0&binding=post&srelay=uniroma1_srelay1"
+            },
+            "expectedResponse": {
+              "x-allowExtraHeaders": true,
+              "x-bodyMatchMode": "NONE",
+              "x-arrayOrderedMatching": false,
+              "x-arrayCheckCount": false,
+              "x-matchResponseSchema": true,
+              "headers": {}
+            },
+            "x-testShouldPass": true,
+            "x-testEnabled": true,
+            "x-testName": "login authn request (post)",
+            "x-testDescription": "TODO: Add Description"
+          }
+        ],
+        "x-operation-settings": {
+          "CollectParameters": false,
+          "AllowDynamicQueryParameters": false,
+          "AllowDynamicFormParameters": false,
+          "IsMultiContentStreaming": false
+        }
+      }
+    },
+    "/prvd/{cod_prvd}/consume": {
+      "post": {
+        "description": "receive identity provider response, verify and parse it ",
+        "summary": "receive idp response, verify and parse it",
+        "tags": [
+          "saml"
+        ],
+        "operationId": "process response",
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "parameters": [
+          {
+            "name": "cod_prvd",
+            "in": "path",
+            "description": "Service Provider code. To get provider codes use /prvd service.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "SAMLResponse",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "RelayState",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "authn request valid",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/responseValid"
+              }
+            }
+          },
+          "401": {
+            "description": "idp response not valid",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/responseValid"
+              }
+            }
+          },
+          "404": {
+            "description": "no sp found to verify response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/responseValid"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          }
+        },
+        "security": [],
+        "x-unitTests": [
+          {
+            "request": {
+              "method": "POST",
+              "uri": "/prvd/uniroma1/consume",
+              "headers": {
+                "Content-Type": "application/x-www-form-urlencoded"
+              },
+              "body": "SAMLResponse=PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHNhbWwycDpSZXNwb25zZSB4bWxuczpzYW1sMnA9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDpwcm90b2NvbCIgRGVzdGluYXRpb249Imh0dHA6Ly93d3cudW5pcm9tYTEuaXQvc3BpZC9jb25zdW1lIiBJRD0iX2QzYmI5ODg0LTY2NTctNDhkMS05YWE1LTdiOWQ1ODNiZWE3NyIgSW5SZXNwb25zZVRvPSJfZGJhZjg1YzNlMzQ0NWM0M2ZiODUwN2E5ZjI5ODMxNTkiIElzc3VlSW5zdGFudD0iMjAxNi0wNi0xNlQwODo0MzozMS45ODhaIiBWZXJzaW9uPSIyLjAiPjxzYW1sMjpJc3N1ZXIgeG1sbnM6c2FtbDI9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphc3NlcnRpb24iPmh0dHBzOi8vcG9zdGVpZC5wb3N0ZS5pdDwvc2FtbDI6SXNzdWVyPjxTaWduYXR1cmUgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyMiPjxTaWduZWRJbmZvPjxDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PFNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyNyc2Etc2hhMSIvPjxSZWZlcmVuY2UgVVJJPSIjX2QzYmI5ODg0LTY2NTctNDhkMS05YWE1LTdiOWQ1ODNiZWE3NyI+PFRyYW5zZm9ybXM+PFRyYW5zZm9ybSBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyNlbnZlbG9wZWQtc2lnbmF0dXJlIi8+PFRyYW5zZm9ybSBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMTAveG1sLWV4Yy1jMTRuIyIvPjwvVHJhbnNmb3Jtcz48RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3NoYTEiLz48RGlnZXN0VmFsdWU+QmdDTFgxZkZOUE51YmU2dE5Fa3V6TzBZdXRJPTwvRGlnZXN0VmFsdWU+PC9SZWZlcmVuY2U+PC9TaWduZWRJbmZvPjxTaWduYXR1cmVWYWx1ZT5GemRlRzg2dTgvQ1VZY1Mvc2l4OGJydzh3aXhYUHJzRFRLTnJmUmkvM2lSRmlJWmVPZHJMS1lLWHBhSEFmVEhFVVQ0eGw5U1haNVFhDQpiYlRxWkc2M2VhOEtuT0dyYXI2Vm9reWRYVWFUcXpaVk9XK05PWHVWdi80bzJ5TlhoZ2tDdFk2YklNdW5GQUx5ak9IN3RYZVJlZ0srDQpiRWZ4aDRZUGZ0c0Z2RGg4aWg3UTNjaXFyOFJRV2R2VkZCU2hCd0R1R0ZIdE5uaEhzSDhFdWljY0s0V25WTXpLcksvMXFnNWxldDBHDQo0Ym03cklhQk93dTFGRUtDNENYV2U0K00vR2dIR0RMbWpoVnVqeTVZK2hNUENJUitYb2E2OUdHTnNoOTJhUFFlYzVOVlNxVklzT1JjDQpDMkdaZEpuMFV3b2xudDZGaGNGSnNTTjNLem5HYWhQcDRsY0VHQT09PC9TaWduYXR1cmVWYWx1ZT48S2V5SW5mbz48WDUwOURhdGE+PFg1MDlDZXJ0aWZpY2F0ZT5NSUlFS3pDQ0F4T2dBd0lCQWdJREUyWTBNQTBHQ1NxR1NJYjNEUUVCQ3dVQU1HQXhDekFKQmdOVkJBWVRBa2xVTVJnd0ZnWURWUVFLDQpEQTlRYjNOMFpXTnZiU0JUTG5BdVFTNHhJREFlQmdOVkJBc01GME5sY25ScFptbGpZWFJwYjI0Z1FYVjBhRzl5YVhSNU1SVXdFd1lEDQpWUVFEREF4UWIzTjBaV052YlNCRFFUTXdIaGNOTVRZd01qSTJNVFUxTWpRMFdoY05NakV3TWpJMk1UVTFNalEwV2pCeE1Rc3dDUVlEDQpWUVFHRXdKSlZERU9NQXdHQTFVRUNBd0ZTWFJoYkhreERUQUxCZ05WQkFjTUJGSnZiV1V4SGpBY0JnTlZCQW9NRlZCdmMzUmxJRWwwDQpZV3hwWVc1bElGTXVjQzVCTGpFTk1Bc0dBMVVFQ3d3RVUxQkpSREVVTUJJR0ExVUVBd3dMU1VSUUxWQnZjM1JsU1VRd2dnRWlNQTBHDQpDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLQW9JQkFRRFpGRXRKb0VIRkFqcENhWmNqNURWV3JSRHlhTFp5dTMxWEFwc2xibzg3DQpDeVd6NjFPSk10dzZRUVUwTWRDdHJZYnRTSjZ2Snd4Ny82RVVqc1ozdTR4M0VQTGRsa3lpR09xdWtQd0FUdjRjN1RWT1VWczVvbklxDQpUcGhNOWIrQUhSZzRlaGlNR2VzbS85ZDdSSWFMdU43OWlQVXZkTG42V1AzaWRBZkV3K3JoSi93WUVRMGgxWG01b3NOVWd0V2NCR2F2DQpaSWpMc3NXTnJERGZKWXhYSDNRWjBrSTZmZUV2TENKd2dqWExHa0J1aEZlaE5oTTRmaGJYOWlVQ1d3d2tKM0pzUDIrK1JjL2lUQTBMDQpaaGlVc1hOTnE3Z0JjTEFKOVVYMlYxZFdqVHpCSGV2ZkhzcHp0NGUwVmdJSXdiRFJxc1J0RjhWVVBTRFlZYkxvcXdiTHQxOFhBZ01CDQpBQUdqZ2R3d2dka3dSZ1lEVlIwZ0JEOHdQVEF3QmdjclRBc0JBZ0VCTUNVd0l3WUlLd1lCQlFVSEFnRVdGMmgwZEhBNkx5OTNkM2N1DQpjRzl6ZEdWalpYSjBMbWwwTUFrR0J5dE1Dd0VCQ2dJd0RnWURWUjBQQVFIL0JBUURBZ1N3TUI4R0ExVWRJd1FZTUJhQUZLYzBYUDJGDQpCeVlVMmwwZ0Z6R0tFOHpWU3pmbU1EOEdBMVVkSHdRNE1EWXdOS0F5b0RDR0xtaDBkSEE2THk5d2IzTjBaV05sY25RdWNHOXpkR1V1DQphWFF2Y0c5emRHVmpiMjFqWVRNdlkzSnNNeTVqY213d0hRWURWUjBPQkJZRUZFdnJpa1pRa2ZCanVpVHB4RXhTQmU4d0dnc3lNQTBHDQpDU3FHU0liM0RRRUJDd1VBQTRJQkFRQk5BdzhVb2VpQ0YrMXJGczI3ZDNiRWVmNkNMZS9QSmdhOUVmd0tJdGpNREQ5UXpUL0ZTaFJXDQpLTEhsSzY5TUhMMVpMUFJQdnVXVVRrSU9IVHBOcUJQSUx2TzF1MTNiU2crNm8rMk9kcUFrQ0JrYlRxYkdqV1NQTGFUVVZOVjZNYlhtDQp2dHREOFZkOXZJWmcxeEJCRzNGYWkxM2R3dlNqM2hBWmQ4dWc4YThmVzF5L2lEYlJDNUQxTytIbEhEdXZJVzRMYkowOTNqZGorb1p3DQpTeWQyMTZndFhMMDBRQTBDMXVNdUR2OVdmOUl4bmlUYjcxMGRSU2dJY000L2VSNzgzMmZaZ2RPc29hbEZ6R1lXeFNDczhXT1pyanB1DQpiMWZkYVJTRXVDUWsyK2dtZHNpUmNUczlFcVBDQ05pTmxyTkFpV0V5R3RMOEE0YW8zcERNd0N0cmIyeXI8L1g1MDlDZXJ0aWZpY2F0ZT48L1g1MDlEYXRhPjwvS2V5SW5mbz48L1NpZ25hdHVyZT48c2FtbDJwOlN0YXR1cz48c2FtbDJwOlN0YXR1c0NvZGUgVmFsdWU9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDpzdGF0dXM6U3VjY2VzcyIvPjwvc2FtbDJwOlN0YXR1cz48c2FtbDI6QXNzZXJ0aW9uIHhtbG5zOnNhbWwyPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YXNzZXJ0aW9uIiBJRD0iXzQ2ZTllOTJlLTk2ODItNDBkYy05OTIxLTg4YmE2ZjIzMDhlMyIgSXNzdWVJbnN0YW50PSIyMDE2LTA2LTE2VDA4OjQzOjMwLjk4OVoiIFZlcnNpb249IjIuMCI+PHNhbWwyOklzc3VlciBGb3JtYXQ9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDpuYW1laWQtZm9ybWF0OmVudGl0eSI+aHR0cHM6Ly9wb3N0ZWlkLnBvc3RlLml0PC9zYW1sMjpJc3N1ZXI+PFNpZ25hdHVyZSB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyI+PFNpZ25lZEluZm8+PENhbm9uaWNhbGl6YXRpb25NZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48U2lnbmF0dXJlTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3JzYS1zaGExIi8+PFJlZmVyZW5jZSBVUkk9IiNfNDZlOWU5MmUtOTY4Mi00MGRjLTk5MjEtODhiYTZmMjMwOGUzIj48VHJhbnNmb3Jtcz48VHJhbnNmb3JtIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI2VudmVsb3BlZC1zaWduYXR1cmUiLz48VHJhbnNmb3JtIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PC9UcmFuc2Zvcm1zPjxEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjc2hhMSIvPjxEaWdlc3RWYWx1ZT5xYUlsWGZFaWtlWmw1cXY1ZkZ1YkV3ZVN2OWM9PC9EaWdlc3RWYWx1ZT48L1JlZmVyZW5jZT48L1NpZ25lZEluZm8+PFNpZ25hdHVyZVZhbHVlPlNoOXBRMnFFaXd1dThNMGQwd3VwNXAyY3l5ZmkvYWE2VG93UjNTK0RyTTRpTWpIUW1oZVNkeTUweDhOd044SlVDenBqSktlUmt1L1MNCk1NRjF2YjlBcWt5clh4UlJhYTU1VlRNd2xOa0FYbmtEanFIQ3FvanRaci9DQjMxbHU5bEhWcjNQV1M1NC8xL1ZKRTBsdUNUbEl5akENCnV4SzZTQktaWW9mS2hWRThiLzBYTE93Yk1pUVRtZG00eG1yVGk5YVYzT09zeTRpNTNaOUJkUnVnWmxpYldJKys5ZGE5ZzFhMjJoVVgNCmRzdSt6ZGZLcUN3elQ0Q1FUejBZYjBrbGI2cnhqc0VDUC9wekljM0pXSWJGbXU4djcxdk9Na1VTTHlOODV6MzJodVRlQi9JcG9aMTcNCjg0SjlocVh5SFZQeEd1b09VMkgxK1BxNnoyZU1GbGVsMFB3TjlnPT08L1NpZ25hdHVyZVZhbHVlPjxLZXlJbmZvPjxYNTA5RGF0YT48WDUwOUNlcnRpZmljYXRlPk1JSUVLekNDQXhPZ0F3SUJBZ0lERTJZME1BMEdDU3FHU0liM0RRRUJDd1VBTUdBeEN6QUpCZ05WQkFZVEFrbFVNUmd3RmdZRFZRUUsNCkRBOVFiM04wWldOdmJTQlRMbkF1UVM0eElEQWVCZ05WQkFzTUYwTmxjblJwWm1sallYUnBiMjRnUVhWMGFHOXlhWFI1TVJVd0V3WUQNClZRUUREQXhRYjNOMFpXTnZiU0JEUVRNd0hoY05NVFl3TWpJMk1UVTFNalEwV2hjTk1qRXdNakkyTVRVMU1qUTBXakJ4TVFzd0NRWUQNClZRUUdFd0pKVkRFT01Bd0dBMVVFQ0F3RlNYUmhiSGt4RFRBTEJnTlZCQWNNQkZKdmJXVXhIakFjQmdOVkJBb01GVkJ2YzNSbElFbDANCllXeHBZVzVsSUZNdWNDNUJMakVOTUFzR0ExVUVDd3dFVTFCSlJERVVNQklHQTFVRUF3d0xTVVJRTFZCdmMzUmxTVVF3Z2dFaU1BMEcNCkNTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCQVFEWkZFdEpvRUhGQWpwQ2FaY2o1RFZXclJEeWFMWnl1MzFYQXBzbGJvODcNCkN5V3o2MU9KTXR3NlFRVTBNZEN0cllidFNKNnZKd3g3LzZFVWpzWjN1NHgzRVBMZGxreWlHT3F1a1B3QVR2NGM3VFZPVVZzNW9uSXENClRwaE05YitBSFJnNGVoaU1HZXNtLzlkN1JJYUx1Tjc5aVBVdmRMbjZXUDNpZEFmRXcrcmhKL3dZRVEwaDFYbTVvc05VZ3RXY0JHYXYNClpJakxzc1dOckREZkpZeFhIM1FaMGtJNmZlRXZMQ0p3Z2pYTEdrQnVoRmVoTmhNNGZoYlg5aVVDV3d3a0ozSnNQMisrUmMvaVRBMEwNClpoaVVzWE5OcTdnQmNMQUo5VVgyVjFkV2pUekJIZXZmSHNwenQ0ZTBWZ0lJd2JEUnFzUnRGOFZVUFNEWVliTG9xd2JMdDE4WEFnTUINCkFBR2pnZHd3Z2Rrd1JnWURWUjBnQkQ4d1BUQXdCZ2NyVEFzQkFnRUJNQ1V3SXdZSUt3WUJCUVVIQWdFV0YyaDBkSEE2THk5M2QzY3UNCmNHOXpkR1ZqWlhKMExtbDBNQWtHQnl0TUN3RUJDZ0l3RGdZRFZSMFBBUUgvQkFRREFnU3dNQjhHQTFVZEl3UVlNQmFBRktjMFhQMkYNCkJ5WVUybDBnRnpHS0U4elZTemZtTUQ4R0ExVWRId1E0TURZd05LQXlvRENHTG1oMGRIQTZMeTl3YjNOMFpXTmxjblF1Y0c5emRHVXUNCmFYUXZjRzl6ZEdWamIyMWpZVE12WTNKc015NWpjbXd3SFFZRFZSME9CQllFRkV2cmlrWlFrZkJqdWlUcHhFeFNCZTh3R2dzeU1BMEcNCkNTcUdTSWIzRFFFQkN3VUFBNElCQVFCTkF3OFVvZWlDRisxckZzMjdkM2JFZWY2Q0xlL1BKZ2E5RWZ3S0l0ak1ERDlRelQvRlNoUlcNCktMSGxLNjlNSEwxWkxQUlB2dVdVVGtJT0hUcE5xQlBJTHZPMXUxM2JTZys2bysyT2RxQWtDQmtiVHFiR2pXU1BMYVRVVk5WNk1iWG0NCnZ0dEQ4VmQ5dklaZzF4QkJHM0ZhaTEzZHd2U2ozaEFaZDh1ZzhhOGZXMXkvaURiUkM1RDFPK0hsSER1dklXNExiSjA5M2pkaitvWncNClN5ZDIxNmd0WEwwMFFBMEMxdU11RHY5V2Y5SXhuaVRiNzEwZFJTZ0ljTTQvZVI3ODMyZlpnZE9zb2FsRnpHWVd4U0NzOFdPWnJqcHUNCmIxZmRhUlNFdUNRazIrZ21kc2lSY1RzOUVxUENDTmlObHJOQWlXRXlHdEw4QTRhbzNwRE13Q3RyYjJ5cjwvWDUwOUNlcnRpZmljYXRlPjwvWDUwOURhdGE+PC9LZXlJbmZvPjwvU2lnbmF0dXJlPjxzYW1sMjpTdWJqZWN0PjxzYW1sMjpOYW1lSUQgRm9ybWF0PSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6bmFtZWlkLWZvcm1hdDp0cmFuc2llbnQiIE5hbWVRdWFsaWZpZXI9Imh0dHBzOi8vcG9zdGVpZC5wb3N0ZS5pdCI+U1BJRC02NDBmOWNmNC04ZjE2LTRkN2YtODhmNi05MThhZGI1ZjBlMDE8L3NhbWwyOk5hbWVJRD48c2FtbDI6U3ViamVjdENvbmZpcm1hdGlvbiBNZXRob2Q9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDpjbTpiZWFyZXIiPjxzYW1sMjpTdWJqZWN0Q29uZmlybWF0aW9uRGF0YSBJblJlc3BvbnNlVG89Il9kYmFmODVjM2UzNDQ1YzQzZmI4NTA3YTlmMjk4MzE1OSIgTm90T25PckFmdGVyPSIyMDE2LTA2LTE2VDA4OjQ0OjMwLjk4OFoiIFJlY2lwaWVudD0iaHR0cDovL3d3dy51bmlyb21hMS5pdC9zcGlkL2NvbnN1bWUiLz48L3NhbWwyOlN1YmplY3RDb25maXJtYXRpb24+PC9zYW1sMjpTdWJqZWN0PjxzYW1sMjpDb25kaXRpb25zIE5vdEJlZm9yZT0iMjAxNi0wNi0xNlQwODo0MzozMC45ODhaIiBOb3RPbk9yQWZ0ZXI9IjIwMTYtMDYtMTZUMDg6NDQ6MzAuOTg4WiI+PHNhbWwyOkF1ZGllbmNlUmVzdHJpY3Rpb24+PHNhbWwyOkF1ZGllbmNlPmh0dHA6Ly93d3cudW5pcm9tYTEuaXQ8L3NhbWwyOkF1ZGllbmNlPjwvc2FtbDI6QXVkaWVuY2VSZXN0cmljdGlvbj48L3NhbWwyOkNvbmRpdGlvbnM+PHNhbWwyOkF1dGhuU3RhdGVtZW50IEF1dGhuSW5zdGFudD0iMjAxNi0wNi0xNlQwODo0MzozMC45ODhaIiBTZXNzaW9uSW5kZXg9ImNGZERObTA3QXUvU2hEZlVzOURmNVAzTkllOXUwZWhIVHQrZEhHMlZuT2VrVUd5SUxQYjRZdz09Ij48c2FtbDI6QXV0aG5Db250ZXh0PjxzYW1sMjpBdXRobkNvbnRleHRDbGFzc1JlZj51cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YWM6Y2xhc3NlczpTcGlkTDE8L3NhbWwyOkF1dGhuQ29udGV4dENsYXNzUmVmPjwvc2FtbDI6QXV0aG5Db250ZXh0Pjwvc2FtbDI6QXV0aG5TdGF0ZW1lbnQ+PHNhbWwyOkF0dHJpYnV0ZVN0YXRlbWVudD48c2FtbDI6QXR0cmlidXRlIE5hbWU9ImZpc2NhbE51bWJlciI+PHNhbWwyOkF0dHJpYnV0ZVZhbHVlIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeHNpOnR5cGU9InhzOnN0cmluZyI+VElOSVQtR0hOTFJUODVBMjFMMjE5UDwvc2FtbDI6QXR0cmlidXRlVmFsdWU+PC9zYW1sMjpBdHRyaWJ1dGU+PC9zYW1sMjpBdHRyaWJ1dGVTdGF0ZW1lbnQ+PC9zYW1sMjpBc3NlcnRpb24+PC9zYW1sMnA6UmVzcG9uc2U+&RelayState=uniroma1_srelay1"
+            },
+            "expectedResponse": {
+              "x-allowExtraHeaders": true,
+              "x-bodyMatchMode": "NONE",
+              "x-arrayOrderedMatching": false,
+              "x-arrayCheckCount": false,
+              "x-matchResponseSchema": true,
+              "headers": {}
+            },
+            "x-testShouldPass": true,
+            "x-testEnabled": true,
+            "x-testName": "response OK",
+            "x-testDescription": "TODO: Add Description"
+          }
+        ],
+        "x-operation-settings": {
+          "CollectParameters": false,
+          "AllowDynamicQueryParameters": false,
+          "AllowDynamicFormParameters": false,
+          "IsMultiContentStreaming": false
+        }
+      }
+    },
+    "/assertion/validate": {
+      "post": {
+        "description": "verify and validate saml assertions of type EntityDescriptor, Response, AuthnRequest",
+        "summary": "verify and validate saml assertions",
+        "tags": [
+          "misc"
+        ],
+        "operationId": "verify assertions",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/VerifyAssertionrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "assertion OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/assertionChk"
+              }
+            }
+          },
+          "401": {
+            "description": "assertion not valid",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/assertionChk"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/APIresponse"
+              }
+            }
+          }
+        },
+        "security": [],
+        "x-unitTests": [],
+        "x-operation-settings": {
+          "CollectParameters": false,
+          "AllowDynamicQueryParameters": false,
+          "AllowDynamicFormParameters": false,
+          "IsMultiContentStreaming": false
+        }
+      }
+    }
+  },
+  "definitions": {
+    "tokenOK": {
+      "type": "object",
+      "required": [
+        "id",
+        "apiVersion",
+        "error",
+        "result"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": [
+            "message",
+            "code",
+            "httpcode"
+          ],
+          "properties": {
+            "code": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 0
+            },
+            "httpcode": {
+              "type": "integer",
+              "minimum": 200,
+              "maximum": 200
+            },
+            "message": {
+              "type": "string",
+              "pattern": "^OK$",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "apiVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "object",
+          "required": [
+            "token"
+          ],
+          "properties": {
+            "token": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "getMetadataResponse": {
+      "type": "object",
+      "required": [
+        "id",
+        "apiVersion",
+        "error",
+        "result"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": [
+            "message",
+            "code",
+            "httpcode"
+          ],
+          "properties": {
+            "code": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 0
+            },
+            "httpcode": {
+              "type": "integer",
+              "minimum": 200,
+              "maximum": 200
+            },
+            "message": {
+              "type": "string",
+              "pattern": "^OK$",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "apiVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "object",
+          "required": [
+            "metadata",
+            "x509cert",
+            "key",
+            "x509certFingerPrint",
+            "fingerPrintAlg"
+          ],
+          "properties": {
+            "metadata": {
+              "type": "string",
+              "minLength": 1
+            },
+            "x509cert": {
+              "type": "string",
+              "minLength": 1
+            },
+            "key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "x509certFingerPrint": {
+              "type": "string",
+              "minLength": 1
+            },
+            "fingerPrintAlg": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "tokenValid": {
+      "type": "object",
+      "required": [
+        "id",
+        "apiVersion",
+        "error",
+        "result"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": [
+            "message",
+            "code",
+            "httpcode"
+          ],
+          "properties": {
+            "code": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 0
+            },
+            "httpcode": {
+              "type": "integer",
+              "minimum": 200,
+              "maximum": 200
+            },
+            "message": {
+              "type": "string",
+              "pattern": "^New token successfully created$",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "apiVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "object",
+          "required": [
+            "jose"
+          ],
+          "properties": {
+            "jose": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "metadataValid": {
+      "type": "object",
+      "required": [
+        "id",
+        "apiVersion",
+        "error",
+        "result"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": [
+            "message",
+            "code",
+            "httpcode"
+          ],
+          "properties": {
+            "code": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 0
+            },
+            "httpcode": {
+              "type": "integer",
+              "minimum": 200,
+              "maximum": 200
+            },
+            "message": {
+              "type": "string",
+              "pattern": "^OK$",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "apiVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "object",
+          "required": [
+            "metadataValidate"
+          ],
+          "properties": {
+            "metadataValidate": {
+              "type": "object",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "assertionChk": {
+      "type": "object",
+      "required": [
+        "id",
+        "apiVersion",
+        "error",
+        "result"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": [
+            "message",
+            "code",
+            "httpcode"
+          ],
+          "properties": {
+            "code": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 0
+            },
+            "httpcode": {
+              "type": "integer",
+              "minimum": 200,
+              "maximum": 200
+            },
+            "message": {
+              "type": "string",
+              "pattern": "^OK$",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "apiVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "object",
+          "required": [
+            "assertionChk"
+          ],
+          "properties": {
+            "assertionChk": {
+              "type": "object",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "metadataBuild": {
+      "type": "object",
+      "required": [
+        "id",
+        "apiVersion",
+        "error",
+        "result"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": [
+            "message",
+            "code",
+            "httpcode"
+          ],
+          "properties": {
+            "code": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 0
+            },
+            "httpcode": {
+              "type": "integer",
+              "minimum": 200,
+              "maximum": 200
+            },
+            "message": {
+              "type": "string",
+              "pattern": "^OK$",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "apiVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "object",
+          "required": [
+            "metadata",
+            "jwt",
+            "idassertion"
+          ],
+          "properties": {
+            "metadata": {
+              "type": "string",
+              "minLength": 1
+            },
+            "jwt": {
+              "type": "string",
+              "minLength": 1
+            },
+            "idassertion": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "providersList": {
+      "type": "object",
+      "required": [
+        "id",
+        "apiVersion",
+        "error",
+        "result"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": [
+            "message",
+            "code",
+            "httpcode"
+          ],
+          "properties": {
+            "code": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 0
+            },
+            "httpcode": {
+              "type": "integer",
+              "minimum": 200,
+              "maximum": 200
+            },
+            "message": {
+              "type": "string",
+              "pattern": "^OK$",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "apiVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "object",
+          "required": [
+            "providers"
+          ],
+          "properties": {
+            "providers": {
+              "type": "object",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "VerifyTokenrequest": {
+      "title": "verify token Request",
+      "type": "object",
+      "required": [
+        "id",
+        "apiVersion",
+        "request"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "apiVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request": {
+          "type": "object",
+          "required": [
+            "token"
+          ],
+          "properties": {
+            "token": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "VerifyMetadatarequest": {
+      "title": "verify metadataRequest",
+      "type": "object",
+      "required": [
+        "id",
+        "request",
+        "apiVersion"
+      ],
+      "properties": {
+        "id": {
+          "description": "",
+          "type": "string"
+        },
+        "apiVersion": {
+          "description": "",
+          "type": "string"
+        },
+        "request": {
+          "type": "object",
+          "required": [
+            "metadata"
+          ],
+          "properties": {
+            "metadata": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "VerifyAssertionrequest": {
+      "title": "verify assertion Request",
+      "type": "object",
+      "required": [
+        "id",
+        "request",
+        "apiVersion"
+      ],
+      "properties": {
+        "id": {
+          "description": "",
+          "type": "string"
+        },
+        "apiVersion": {
+          "description": "",
+          "type": "string"
+        },
+        "request": {
+          "type": "object",
+          "required": [
+            "assertion",
+            "provider"
+          ],
+          "properties": {
+            "assertion": {
+              "type": "string"
+            },
+            "provider": {
+              "type": "string",
+              "description": "codice del provider. Può essere vuoto."
+            }
+          }
+        }
+      }
+    },
+    "authnBuild": {
+      "type": "object",
+      "required": [
+        "id",
+        "apiVersion",
+        "error",
+        "result"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": [
+            "message",
+            "code",
+            "httpcode"
+          ],
+          "properties": {
+            "code": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 0
+            },
+            "httpcode": {
+              "type": "integer",
+              "minimum": 200,
+              "maximum": 200
+            },
+            "message": {
+              "type": "string",
+              "pattern": "^OK$",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "apiVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "object",
+          "required": [
+            "authnrequest",
+            "jwt",
+            "idassertion"
+          ],
+          "properties": {
+            "authnrequest": {
+              "type": "string",
+              "minLength": 1
+            },
+            "jwt": {
+              "type": "string",
+              "minLength": 1
+            },
+            "idassertion": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "VerifyAuthnRequestrequest": {
+      "title": "verify authn requestRequest",
+      "type": "object",
+      "required": [
+        "id",
+        "request",
+        "apiVersion"
+      ],
+      "properties": {
+        "id": {
+          "description": "",
+          "type": "string"
+        },
+        "apiVersion": {
+          "description": "",
+          "type": "string"
+        },
+        "request": {
+          "type": "object",
+          "required": [
+            "authnrequest"
+          ],
+          "properties": {
+            "authnrequest": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "authnValid": {
+      "type": "object",
+      "required": [
+        "id",
+        "apiVersion",
+        "error",
+        "result"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": [
+            "message",
+            "code",
+            "httpcode"
+          ],
+          "properties": {
+            "code": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 0
+            },
+            "httpcode": {
+              "type": "integer",
+              "minimum": 200,
+              "maximum": 200
+            },
+            "message": {
+              "type": "string",
+              "pattern": "^OK$",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "apiVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "object",
+          "required": [
+            "authnValidate"
+          ],
+          "properties": {
+            "authnValidate": {
+              "type": "object",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "responseValid": {
+      "type": "object",
+      "required": [
+        "id",
+        "apiVersion",
+        "error",
+        "result"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": [
+            "message",
+            "code",
+            "httpcode"
+          ],
+          "properties": {
+            "code": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 0
+            },
+            "httpcode": {
+              "type": "integer",
+              "minimum": 200,
+              "maximum": 200
+            },
+            "message": {
+              "type": "string",
+              "pattern": "^OK$",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "apiVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "object",
+          "required": [
+            "responseValidate"
+          ],
+          "properties": {
+            "responseValidate": {
+              "type": "object",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "APIresponse": {
+      "type": "object",
+      "required": [
+        "id",
+        "apiVersion",
+        "error",
+        "result"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": [
+            "message",
+            "code",
+            "httpcode"
+          ],
+          "properties": {
+            "code": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "httpcode": {
+              "type": "integer",
+              "minimum": 100
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1
+            },
+            "devMessage": {
+              "type": "string",
+              "minLength": 1
+            },
+            "debugMessage": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": true
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "apiVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "APIrequest": {
+      "type": "object",
+      "required": [
+        "id",
+        "apiVersion",
+        "request"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "apiVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "request": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,76 @@
+#!/bin/sh
+#
+# PROVIDE: tornadows
+# REQUIRE: LOGIN cleanvar
+# KEYWORD: shutdown
+#
+# Add the following line to /etc/rc.conf[.local] to enable tornadows server
+#
+# tornadows_enable (bool):            Set to "NO" by default.
+#                                     Set it to "YES" to enable tornadows.
+# tornadows_config (str):             default: {tornadows_home}/server.ini
+#                                     Set to the full path of the config file
+# tornadows_home (str):               default: /tornadows
+#                                     Set to the full path of the tornadows home 
+# tornadows_flags (str):              Set to "" by default.
+#				      Extra flags passed to start command.
+# tornadows_pid (str):                default: /tornadows/run/tornadows.pid
+#                                     Set to the full path of the tornadows pid file
+# tornadows_user (str):               Default user account to run with (default: www).
+
+. /etc/rc.subr
+
+name="tornadows"
+rcvar=tornadows_enable
+load_rc_config $name
+
+: ${tornadows_enable:="NO"}
+: ${tornadows_home="/tornadows"}
+: ${tornadows_config="${tornadows_home}/server.ini"}
+: ${tornadows_user="www"}
+: ${tornadows_pid="${tornadows_home}/run/tornadows.pid"}
+
+command="/usr/local/bin/python3.6"
+pidfile="${tornadows_pid}"
+
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
+status_cmd="${name}_status"
+
+tornadows_start()
+{
+  chdir ${tornadows_home}
+  /usr/sbin/daemon -f -u ${tornadows_user} ${command} ${rc_flags} ${tornadows_home}/server.py -c ${tornadows_config}
+  echo "${name} started"
+}
+
+tornadows_stop()
+{
+  pid=$(check_pidfile $pidfile $command)
+  if [ -z "$pid" ]; then
+     echo "Nothing to stop"
+  else
+      list_to_kill=`pgrep -P ${pid}`
+      kill ${pid}
+      for i in $list_to_kill
+      do
+         kill ${i}
+      done
+      rm ${pidfile}
+      echo "${name} stopped"
+  fi
+}
+
+tornadows_status()
+{
+  pid=$(check_pidfile $pidfile $command)
+  if [ -z "$pid" ]; then
+     echo "${name} is NOT running"
+  else
+     echo "${name} is running, PID ${pid}"
+  fi
+}
+
+
+load_rc_config $name
+run_rc_command "$1"
