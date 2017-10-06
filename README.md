@@ -3,10 +3,10 @@ sapspid è composto da un insieme di servizi RestFULL che permettono l’astrazi
 ## COME FUNZIONA
 sapspid è un middleware che si interpone tra il service provider (SP) e l’identity provider (IdP). Il tipico flusso di richiesta di accesso è il seguente:
 
-1 - L’utente richiede accesso tramite SPID ad un servizio del service.provider (SP);
-2- Il SP, contatta sapspid attraverso le sue API;
-3- sapspid genera la richiesta SAML e dirige il browser dell’utente verso la pagina dell’identity provider (IdP) scelto utilizzando uno dei 2 metodi (BINDING HTTP REDIRECTo BINDING HTTP POST);
-4- La risposta dell’IdP (SAML response), a seguito dell’autenticazione dell’utente, viene catturata da sapspid, verificata ed inviata al SP che la elabora e determina l’esito della richiesta di accesso.
+1. L’utente richiede accesso tramite SPID ad un servizio del service.provider (SP);
+2. Il SP, contatta sapspid attraverso le sue API;
+3. sapspid genera la richiesta SAML e dirige il browser dell’utente verso la pagina dell’identity provider (IdP) scelto utilizzando uno dei 2 metodi (BINDING HTTP REDIRECTo BINDING HTTP POST);
+4. La risposta dell’IdP (SAML response), a seguito dell’autenticazione dell’utente, viene catturata da sapspid, verificata ed inviata al SP che la elabora e determina l’esito della richiesta di accesso.
 
 Tutte le API di sapspid sono di tipo RestFull ed essendo basate su messaggi JSON, rendono più semplice l’implementazione da parte del SP. Il valore aggiunto di sapspid è racchiuso nella possibilità di configurare ogni parametro della transazione fra utente <–> SP <–> IdP. Si possono aggiungere IdP in modo trasparente, configurare le URL di callback chiamate dagli IdP per inoltrare la SAML response e configurare tutti gli elementi della SAML request che sono al centro della transazione SPID. Tutte le configurazioni sono archiviate in un DB PostgreSQL
 Una volta configurato, sapspid è in grado di pubblicare i metadati SAML del SP.
